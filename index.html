@@ -125,7 +125,7 @@
 
   <div class="list-container active" id="todo">
     <div class="add-task">
-      <input type="text" placeholder="新しいタスク..." />
+      <input type="text" placeholder="新しいタスク..." onkeydown="if(event.key==='Enter'){addTask('todo');}">
       <button onclick="addTask('todo')">追加</button>
     </div>
     <ul></ul>
@@ -133,7 +133,7 @@
 
   <div class="list-container" id="later">
     <div class="add-task">
-      <input type="text" placeholder="新しいタスク..." />
+      <input type="text" placeholder="新しいタスク..." onkeydown="if(event.key==='Enter'){addTask('later');}">
       <button onclick="addTask('later')">追加</button>
     </div>
     <ul></ul>
@@ -141,7 +141,7 @@
 
   <div class="list-container" id="ideas">
     <div class="add-task">
-      <input type="text" placeholder="新しいタスク..." />
+      <input type="text" placeholder="新しいタスク..." onkeydown="if(event.key==='Enter'){addTask('ideas');}">
       <button onclick="addTask('ideas')">追加</button>
     </div>
     <ul></ul>
@@ -255,8 +255,19 @@
       const blob = new Blob([data], { type: 'text/plain' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'tasks.txt';
+      a.download = getDateTimeFilename() + '_Task.txt';
       a.click();
+    }
+
+    function getDateTimeFilename() {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mi = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+      return `${yyyy}${mm}${dd}_${hh}${mi}${ss}`;
     }
 
     function loadFromFile(event) {
