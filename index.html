@@ -57,6 +57,12 @@
       margin: 10px;
       display: flex;
       gap: 10px;
+      align-items: center;
+    }
+    .controls input[type="text"] {
+      padding: 5px;
+      font-size: 1em;
+      width: 150px;
     }
     .controls button, .controls input[type="file"] {
       padding: 8px 12px;
@@ -116,6 +122,9 @@
   </div>
 
   <div class="controls">
+    <label>ファイル名: 
+      <input type="text" id="filename" value="Task" />
+    </label>
     <button onclick="saveToFile()">保存 (txt)</button>
     <label>
       <input type="file" accept=".txt" onchange="loadFromFile(event)" style="display:none;" />
@@ -247,6 +256,10 @@
     }
 
     function saveToFile() {
+      const filenameInput = document.getElementById('filename').value.trim() || 'Task';
+      const timestamp = getDateTimeFilename();
+      const fullFilename = `${timestamp}_${filenameInput}.txt`;
+
       const data = ['todo', 'later', 'ideas'].map(id => {
         const tasks = [...document.querySelectorAll(`#${id} ul li`)].map(li => li.firstChild.textContent.trim());
         return `${id.toUpperCase()}:\n${tasks.join('\n')}`;
@@ -255,7 +268,7 @@
       const blob = new Blob([data], { type: 'text/plain' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = getDateTimeFilename() + '_Task.txt';
+      a.download = fullFilename;
       a.click();
     }
 
@@ -273,6 +286,10 @@
     function loadFromFile(event) {
       const file = event.target.files[0];
       if (!file) return;
+
+      const filenameWithoutExt = file.name.replace(/\.[^/.]+$/, '').replace(/^\d{8}_\d{6}_/, '');
+      document.getElementById('filename').value = filenameWithoutExt;
+
       const reader = new FileReader();
       reader.onload = e => {
         const content = e.target.result;
